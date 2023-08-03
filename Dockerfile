@@ -1,13 +1,23 @@
 FROM ubuntu:latest
-RUN apt update -y
-RUN apt upgrade -y
-RUN apt -y install ffmpeg pip
 
-RUN pip install schedule yt-dlp spotdl
+# Add crontab file in the cron directory
+ADD crontab /etc/cron.d/hello-cron
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/hello-cron
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+#Install Cron
+RUN apt-get update
+RUN apt-get -y install cron ffmpeg pip
+
+RUN pip install yt-dlp spotdl
 
 WORKDIR /app
-RUN mkdir songs
+ADD work.sh /app
+RUN chmod 777 /app/work.sh
 
-COPY main.py .
-
-ENTRYPOINT [ "python3", "main.py" ]
+# Run the command on container startup
+CMD cron && tail -f /var/log/cron.log

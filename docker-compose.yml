@@ -1,0 +1,14 @@
+services:
+  music-downloader: 
+    build:
+      context: .
+    volumes:
+      - /you_output_directory:/app/songs                                                                          
+  # resilio is optional but very useful for syncing your music with other devices like your phone
+  resilio-sync:
+    image: resilio/sync
+    volumes:
+      - /you_output_directory:/mnt/sync/folders
+    ports:
+      - 8888:8888
+      

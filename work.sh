@@ -1,0 +1,1 @@
+python3 -m spotdl --threads=1 --output="/app/songs/{title} - {artist}.{output-ext}" your_playlist_here
