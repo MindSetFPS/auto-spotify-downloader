@@ -3,12 +3,33 @@ services:
     build:
       context: .
     volumes:
-      - /you_output_directory:/app/songs                                                                          
+      - /your_music_directory:/app/songs     
+
+  navidrome:
+    image: deluan/navidrome:latest
+    # user: 1000:1000 # should be owner of volumes (it gives me bugs)
+    ports:
+      - "4533:4533"
+    restart: unless-stopped
+    environment:
+      # Optional: put your config options customization here. Examples:
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info  
+      ND_SESSIONTIMEOUT: 24h
+      ND_BASEURL: ""
+    volumes:
+      - "/your_music_directory:/music"                                                                     
+  
+  substreamer:
+    image: ghenry22/substreamer:latest
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
   # resilio is optional but very useful for syncing your music with other devices like your phone
   resilio-sync:
     image: resilio/sync
     volumes:
-      - /you_output_directory:/mnt/sync/folders
+      - /your_music_directory:/mnt/sync/folders
     ports:
       - 8888:8888
-      
